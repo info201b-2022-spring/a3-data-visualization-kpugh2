@@ -1,1 +1,11 @@
+# Incarceration Trends
+
+### Introduction
+
+### Summary Information
+
+In the Texas prison systems the average number of black prisoners is much higher than the average
+number of prisoners for other races with mean for black prisoners being ```black_mean``` and the
+mean for latinx, white, Asian American/Pacific Islander, and native being ```latinx_mean```,
+```white_mean```, ```aapi_mean```, and ```native_mean``` respectively.
 

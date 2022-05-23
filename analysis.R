@@ -2,6 +2,10 @@
 
 library(dplyr)
 library(ggplot2)
+library(plotly)
+library(geojsonio)
+library(broom)
+library(usmap)
 
 # Load in data
 
@@ -14,7 +18,7 @@ incarceration_trends <- read.csv("https://raw.githubusercontent.com/vera-institu
 # Select columns and rows
 prison_race <- incarceration_trends %>%
   filter(state == "TX") %>%
-  select(year, county_name, aapi_prison_pop, black_prison_pop, 
+  select(year, county_name, fips, aapi_prison_pop, black_prison_pop, 
          latinx_prison_pop, native_prison_pop, white_prison_pop,
          total_prison_pop, aapi_pop_15to64, black_pop_15to64, 
          latinx_pop_15to64, native_pop_15to64, white_pop_15to64)
@@ -26,7 +30,7 @@ prison_race <- na.omit(prison_race)
 # What is the mean prison population for each race?
 
 prison_pop_means <- prison_race %>%
-  summarise_at(vars("aapi_prison_pop", "black_prison_pop", "latinx_prison_pop", "native_prison_pop", "white_prison_pop"), mean)
+  summarise_at(vars("native_prison_pop", "aapi_prison_pop", "black_prison_pop", "latinx_prison_pop", "white_prison_pop"), mean)
 aapi_mean <- prison_pop_means[1, "aapi_prison_pop"]
 black_mean <- prison_pop_means[1, "black_prison_pop"]
 latinx_mean <- prison_pop_means[1, "latinx_prison_pop"]
@@ -66,7 +70,7 @@ prison_proportions <- prison_race %>%
   mutate(white_prop = white_prison_pop/white_pop_15to64) %>%
   select(year, county_name, aapi_prop, black_prop, latinx_prop, native_prop, white_prop)
 
-# What is the maximum proportion for each race?
+# What is the maximum proportion of people in prison for each race?
 
 prison_proportions[is.na(prison_proportions)] <- 0
 aapi_max_prop <- max(prison_proportions$aapi_prop)
@@ -79,8 +83,23 @@ white_max_prop <- max(prison_proportions$white_prop)
 
 most_black_prisoners <- prison_race %>%
   filter(black_prison_pop == max(prison_race$black_prison_pop)) %>%
-  pull(county_name)
+  pull(county_name, black_prison_pop)
 highest_black_prop <- prison_proportions %>%
   filter(black_prop == black_max_prop) %>%
-  pull(county_name)
+  pull(county_name, black_prop)
+
+# MAP
+
+# Bar chart of the mean of people in prison for each race
+
+# New dataframe with the most recent population of black prisoners for each county
+counties_prison_pop <- prison_race %>%
+  select(year, county_name, fips, black_prison_pop) %>%
+  group_by(county_name) %>%
+  filter(year == max(year))
+
+plot_usmap(data = counties_prison_pop, region = "counties", values = "black_prison_pop", include = "TX", color = "blue") +
+  scale_fill_continuous(low = "white", high = "blue", name = "Black Prison Population per County", label = scales::comma) + 
+  labs(title = "Texas Black Prison Populations per County", subtitle = "using the most recent year available for each county") +
+  theme(legend.position = "right")
 
