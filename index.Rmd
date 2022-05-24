@@ -5,8 +5,6 @@ date: '2022-05-22'
 output: html_document
 ---
 
-# Incarceration Trends
-
 ### Introduction
 
 In the United States racism and racial prejudice have consistently been issues that negatively
@@ -23,8 +21,12 @@ to the overall prison population. By analyzing these variables I hoped to gain a
 of how the prison system is affected by race and how certain patterns regarding race unveil a 
 problematic correlation between race and incarceration that should not be ignored.
 
-```{r, echo = FALSE, warning=FALSE}
+```{r setup, include = FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
 library(dplyr)
+library(ggplot2)
+library(usmap)
 
 incarceration_trends <- read.csv("https://raw.githubusercontent.com/vera-institute/incarceration-trends/master/incarceration_trends.csv")
 prison_race <- incarceration_trends %>%
@@ -133,8 +135,6 @@ I chose to include this chart for two reasons. First, it displays how across mul
 of prisoners is declining. Secondly, it visually shows how the number of black prisoners is consistently higher than the number of white prisoners. Also, I specifically chose Harris County because it is the county with the most prisoners.
 
 ```{r, echo=FALSE}
-library(ggplot2)
-library(plotly)
 
 harris_county %>%
   tail(14) %>%
@@ -176,7 +176,6 @@ ggplot(anderson_county, aes(x=black_prop, y=white_prop)) +
 I chose to include this map because it provides a good visualization of how many black prisoners there are in each Texas county. From the map it is clear that there are some counties that have a very large number of black prisoners and some that do not have a very many. In other words, the distribution is concentrated in a few specific counties. 
 
 ```{r, echo=FALSE}
-library(usmap)
 
 plot_usmap(data = counties_prison_pop, region = "counties", values = "black_prison_pop", include = "TX", color = "blue") +
   scale_fill_continuous(low = "white", high = "blue", name = "Black Prison Population", label = scales::comma) + 
