@@ -3,8 +3,6 @@
 library(dplyr)
 library(ggplot2)
 library(plotly)
-library(geojsonio)
-library(broom)
 library(usmap)
 
 # Load in data
@@ -12,8 +10,6 @@ library(usmap)
 incarceration_trends <- read.csv("https://raw.githubusercontent.com/vera-institute/incarceration-trends/master/incarceration_trends.csv")
 
 # INTRODUCTION
-# 
-# 
 
 # Select columns and rows
 prison_race <- incarceration_trends %>%
@@ -79,7 +75,7 @@ latinx_max_prop <- max(prison_proportions$latinx_prop)
 native_max_prop <- max(prison_proportions$native_prop)
 white_max_prop <- max(prison_proportions$white_prop)
 
-# Which county has the most black prisons? The highest black proportion?
+# Which county has the most black prisoners? The highest black proportion?
 
 most_black_prisoners <- prison_race %>%
   filter(black_prison_pop == max(prison_race$black_prison_pop)) %>%
@@ -88,9 +84,59 @@ highest_black_prop <- prison_proportions %>%
   filter(black_prop == black_max_prop) %>%
   pull(county_name, black_prop)
 
+# Which county has the most prisoners?
+most_prisoners <- prison_race %>%
+  filter(total_prison_pop == max(prison_race$total_prison_pop)) %>%
+  pull(county_name)
+
+# CHARTS
+
+# In Harris County (the county with the most prisoners) how has the number of black 
+# prisoners changed each year?
+
+harris_county <- prison_race %>%
+  filter(county_name == "Harris County") %>%
+  select(year, county_name, black_prison_pop, white_prison_pop)
+
+# Chart displaying the number of black prisoners and the number of white prisoners in 
+# Harris county prisons each year
+# I could not figure out how to include a legend but the teal circles are black prisoners
+# and the yellow triangles are white prisoners.
+harris_county %>%
+  tail(14) %>%
+  ggplot( aes(x=year)) +
+  geom_line(aes(y=black_prison_pop), color="blue") +
+  geom_line(aes(y=white_prison_pop), color="red") +
+  ylab("Prison Population") +
+  geom_point(aes(y=black_prison_pop), shape=21, color="black", fill="#69b3a2", size=6) +
+  geom_point(aes(y=white_prison_pop), shape=24, color="black", fill="#E69F00", size=6) +
+  theme(legend.position = "right") +
+  ggtitle("Black and White Prisoners in Harris County")
+
+# filtering prison proportions to just Anderson County
+
+anderson_county <- prison_proportions %>%
+  filter(county_name == "Anderson County") %>%
+  select(year, county_name, black_prop, white_prop)
+
+# chart comparing the proportion of black people in prison and white people in prison
+
+ggplot(anderson_county, aes(x=black_prop, y=white_prop)) + 
+  geom_point(
+    color="orange",
+    fill="#69b3a2",
+    shape=21,
+    alpha=0.5,
+    size=6,
+    stroke = 2
+  ) +
+  xlab("Proportion of Black People in Prison") +
+  ylab("Proportion of White People in Prison")
+
+
 # MAP
 
-# Bar chart of the mean of people in prison for each race
+# Map of Texas counties with the population of black prisoners
 
 # New dataframe with the most recent population of black prisoners for each county
 counties_prison_pop <- prison_race %>%
@@ -99,7 +145,7 @@ counties_prison_pop <- prison_race %>%
   filter(year == max(year))
 
 plot_usmap(data = counties_prison_pop, region = "counties", values = "black_prison_pop", include = "TX", color = "blue") +
-  scale_fill_continuous(low = "white", high = "blue", name = "Black Prison Population per County", label = scales::comma) + 
+  scale_fill_continuous(low = "white", high = "blue", name = "Black Prison Population", label = scales::comma) + 
   labs(title = "Texas Black Prison Populations per County", subtitle = "using the most recent year available for each county") +
   theme(legend.position = "right")
 
