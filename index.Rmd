@@ -11,15 +11,7 @@ In the United States racism and racial prejudice have consistently been issues t
 affect minorities. One institution in particular where the affects of these issues can be clearly
 seen is the United States' prison system. In the US, African Americans are viewed as "dangerous" and
 more likely to commit crimes which in turn has led to African Americans being incarcerated much more often than people of other races.
-For my analysis, I have chosen to specifically focus on data from US prisons since Also, I have
-chosen to further narrow down my data by just looking at the prisons in Texas. I specifically chose
-Texas because it is the state with the most prisons and the most prisoners. The variables that I have chosen to analyze are the number of prisoners for each race. I wanted to see how race affected the
-overall population in prison. In my dataset, I kept the total populations of each race from 15 to 64 
-in order to see how the number of prisoners in each race compared to the overall total of people of
-that race. I also kept the total number of prisoners so that I could compare how each race compared 
-to the overall prison population. By analyzing these variables I hoped to gain a better understanding
-of how the prison system is affected by race and how certain patterns regarding race unveil a 
-problematic correlation between race and incarceration that should not be ignored.
+For my analysis, I have chosen to specifically focus on data from US prisons since prisons are usually for those who have commited more serious offenses. Also, I have chosen to further narrow down my data by just looking at the prisons in Texas. I specifically chose Texas because it is the state with the most prisons and the most prisoners. The variables that I have chosen to analyze are the number of prisoners for each race. I wanted to see how race affected the overall population in prison. In my dataset, I kept the total populations of each race from 15 to 64 in order to see how the number of prisoners in each race compared to the overall total of people of that race. I also kept the total number of prisoners so that I could compare how each race compared to the overall prison population. By analyzing these variables I hoped to gain a better understanding of how the prison system is affected by race and how certain patterns regarding race unveil a problematic correlation between race and incarceration that should not be ignored.
 
 ```{r setup, include = FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
